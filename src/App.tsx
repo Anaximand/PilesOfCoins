@@ -35,16 +35,24 @@ function App() {
       ctx.clearRect(0, 0, 1024, 1024)
     }
     if(ctx){
-      ctx.strokeStyle = 'rgba(255, 0, 0, 0.3)'
-      ctx.beginPath()
-      for (let i = 5; i < 180; i += 5) {
-      const y = 1024 - i * 1024 / 180
-      ctx.moveTo(0, y)
-      ctx.lineTo(1024, y)
-      ctx.fillStyle = 'white'
-      ctx.fillText(`${i} cm`, 10, y - 2)
+        
+
+        for (let i = 5; i < 180; i += 5) {
+        ctx.beginPath()
+        if(i%10 == 0){
+          ctx.strokeStyle = 'rgba(255, 0, 0, 0.3)'
+        }
+        else{
+          ctx.strokeStyle = 'rgba(255, 0, 0, 0.1)'
+        }
+        const y = 1024 - i * 1024 / 180
+        ctx.moveTo(0, y)
+        ctx.lineTo(1024, y)
+        ctx.fillStyle = 'white'
+        ctx.fillText(`${i} cm`, 10, y - 2)
+        ctx.stroke()
       }
-      ctx.stroke()
+
     }
 
     if (ctx) {
