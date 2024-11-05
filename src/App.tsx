@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
+import chairImage from './assets/chair.png'
 
 function App() {
   const [coinRadius, setCoinRadius] = useState(1.27) // in cm
@@ -7,6 +8,7 @@ function App() {
   const [angleOfRepose, setAngleOfRepose] = useState(45) // in degrees
   const [packingEfficiency, setPackingEfficiency] = useState(0.6)
   const [coinCount, setCoinCount] = useState(1000)
+  const [showChair, setShowChair] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const coinVolume = () => { // in cm^3
@@ -55,6 +57,17 @@ function App() {
 
     }
 
+    if(showChair){
+    const tableImg = new Image()
+    tableImg.src = chairImage
+    tableImg.onload = () => {
+      const tableHeight = 80 * 1024 / 180
+      const tableWidth = tableImg.width * (tableHeight / tableImg.height)
+      if(ctx)
+      ctx.drawImage(tableImg, 1024 - tableWidth, 1024 - tableHeight, tableWidth, tableHeight)
+    }
+  }
+
     if (ctx) {
       ctx.beginPath()
       ctx.moveTo(1024 / 2, 1024 - pileHeight() * 1024 / 180)
@@ -66,12 +79,13 @@ function App() {
       ctx.stroke()
     }
 
+   
 }
 
 
   useEffect(() => { 
     drawPile()
-  }, [coinCount, coinRadius, coinThickness, angleOfRepose, packingEfficiency])
+  }, [coinCount, coinRadius, coinThickness, angleOfRepose, packingEfficiency, showChair])
 
 
 
@@ -101,6 +115,10 @@ function App() {
           <label>
             Coin Count:
             <input type="number" value={coinCount} step={1} min={1} onChange={(e) => setCoinCount(parseInt(e.target.value))} />
+          </label>
+          <label>
+            <input type="checkbox" checked={showChair} onChange={(e) => setShowChair(e.target.checked)} />
+            Show chair
           </label>
         </div>
        
