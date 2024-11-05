@@ -88,12 +88,14 @@ function App() {
             Coin Thickness (cm):
             <input type="number" value={coinThickness} step={0.01} min={0} onChange={(e) => setCoinThickness(parseFloat(e.target.value))} />
           </label>
-          <label>
-            Angle of Repose (degrees):
+            <label title="Angle of your piles side (it's a cone)">
+            Angle of Repose (degrees) 🛈:
             <input type="number" value={angleOfRepose} step={1} min={1} onChange={(e) => setAngleOfRepose(parseFloat(e.target.value))} />
-          </label>
+            </label>
           <label>
-            Packing Efficiency:
+          <label title="How well you can pack the coins. 1 means the pile takes up exactly the volume of individual coins. 0.5 means that it takes twice that much space">
+            Packing Efficiency 🛈:
+          </label>
             <input type="number" value={packingEfficiency} step={0.1} min={0} onChange={(e) => setPackingEfficiency(parseFloat(e.target.value))} />
           </label>
           <label>
