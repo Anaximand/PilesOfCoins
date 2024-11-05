@@ -14,11 +14,11 @@ function App() {
   }
 
   const coinsPerCm3 = () => {
-    return 1 / coinVolume() * (1/packingEfficiency)
+    return (1 / coinVolume()) * (1/packingEfficiency)
   }
 
   const pileVolume = () => { //in cm^3
-    return coinsPerCm3() * coinCount
+    return coinCount/coinsPerCm3()
   }
   const pileRadius = () => {
     return Math.pow((3*pileVolume())/(Math.PI*Math.tan(angleOfRepose*Math.PI/180)), 1/3)
