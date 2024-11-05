@@ -14,7 +14,7 @@ function App() {
   }
 
   const coinsPerCm3 = () => {
-    return (1 / coinVolume()) * (1/packingEfficiency)
+    return 1 / coinVolume() * packingEfficiency
   }
 
   const pileVolume = () => { //in cm^3
