@@ -7,13 +7,48 @@ interface Coin {
   radius: number;
   thickness: number;
   density: number;
+  imperialRadius: number;
+  imperialThickness: number;
+  imperialDensity: number;
 }
 
 const coinList: Coin[] = [
-  { name: "Roman Aureus", radius: 0.95, thickness: 0.1465, density: 19.3 },
-  { name: "Silver Denarius", radius: 0.95, thickness: 0.1465, density: 10.49 },
-  { name: "OSE Gold Coin", radius: 1.935, thickness: 0.2, density: 19.3 },
-  { name: "OSE Silver Coin", radius: 2.14, thickness: 0.3, density: 10.49 },
+  {
+    name: "Roman Aureus",
+    radius: 0.95,
+    thickness: 0.1465,
+    density: 19.3,
+    imperialRadius: 0.375,
+    imperialThickness: 0.0577,
+    imperialDensity: 11.16,
+  },
+  {
+    name: "Silver Denarius",
+    radius: 0.95,
+    thickness: 0.1465,
+    density: 10.49,
+    imperialRadius: 0.375,
+    imperialThickness: 0.0577,
+    imperialDensity: 6.06,
+  },
+  {
+    name: "OSE Gold Coin",
+    radius: 1.935,
+    thickness: 0.2,
+    density: 19.3,
+    imperialRadius: 0.762,
+    imperialThickness: 0.0787,
+    imperialDensity: 11.16,
+  },
+  {
+    name: "OSE Silver Coin",
+    radius: 2.14,
+    thickness: 0.3,
+    density: 10.49,
+    imperialRadius: 0.842,
+    imperialThickness: 0.1181,
+    imperialDensity: 6.06,
+  },
 ];
 
 function App() {
@@ -25,10 +60,13 @@ function App() {
   const [packingEfficiency, setPackingEfficiency] = useState(0.6);
   const [coinCount, setCoinCount] = useState(1000);
   const [showChair, setShowChair] = useState(false);
+  const [useImperial, setUseImperial] = useState(false);
+  const [lenUnit, setLenUnit] = useState("cm");
+  const [weightUnit, setWeightUnit] = useState("g");
+  const [volUnit, setVolUnit] = useState("cm³");
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const coinVolume = () => {
-    // in cm^3
     return Math.PI * Math.pow(coinRadius, 2) * coinThickness;
   };
 
@@ -53,32 +91,35 @@ function App() {
 
   const coinWeight = () => {
     return coinVolume() * density;
-  }
+  };
 
   const pileWeight = () => {
     return coinCount * coinWeight();
-  }
+  };
 
   const drawPile = () => {
-    console.log(pileHeight(), pileRadius());
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
+    const maxHeight = useImperial ? 72 : 180;
+    const step = useImperial ? 2 : 5;
+    const unit = useImperial ? "in" : "cm";
+    const chairHeight = useImperial ? 30.48 : 80;
     if (ctx) {
       ctx.clearRect(0, 0, 1024, 1024);
     }
     if (ctx) {
-      for (let i = 5; i < 180; i += 5) {
+      for (let i = step; i < 180; i += step) {
         ctx.beginPath();
-        if (i % 10 == 0) {
+        if (i % (step * 2) == 0) {
           ctx.strokeStyle = "rgba(255, 0, 0, 0.3)";
         } else {
           ctx.strokeStyle = "rgba(255, 0, 0, 0.1)";
         }
-        const y = 1024 - (i * 1024) / 180;
+        const y = 1024 - (i * 1024) / maxHeight;
         ctx.moveTo(0, y);
         ctx.lineTo(1024, y);
         ctx.fillStyle = "white";
-        ctx.fillText(`${i} cm`, 10, y - 2);
+        ctx.fillText(`${i} ${unit}`, 10, y - 2);
         ctx.stroke();
       }
     }
@@ -87,7 +128,7 @@ function App() {
       const tableImg = new Image();
       tableImg.src = chairImage;
       tableImg.onload = () => {
-        const tableHeight = (80 * 1024) / 180;
+        const tableHeight = (chairHeight * 1024) / maxHeight;
         const tableWidth = tableImg.width * (tableHeight / tableImg.height);
         if (ctx)
           ctx.drawImage(
@@ -102,9 +143,9 @@ function App() {
 
     if (ctx) {
       ctx.beginPath();
-      ctx.moveTo(1024 / 2, 1024 - (pileHeight() * 1024) / 180);
-      ctx.lineTo(1024 / 2 - (pileRadius() * 1024) / 180, 1024);
-      ctx.lineTo(1024 / 2 + (pileRadius() * 1024) / 180, 1024);
+      ctx.moveTo(1024 / 2, 1024 - (pileHeight() * 1024) / maxHeight);
+      ctx.lineTo(1024 / 2 - (pileRadius() * 1024) / maxHeight, 1024);
+      ctx.lineTo(1024 / 2 + (pileRadius() * 1024) / maxHeight, 1024);
       ctx.closePath();
       ctx.fillStyle = "yellow";
       ctx.fill();
@@ -113,6 +154,15 @@ function App() {
   };
 
   useEffect(() => {
+    if (useImperial) {
+      setLenUnit("in");
+      setWeightUnit("oz");
+      setVolUnit("in³");
+    } else {
+      setLenUnit("cm");
+      setWeightUnit("g");
+      setVolUnit("cm³");
+    }
     drawPile();
   }, [
     coinCount,
@@ -121,6 +171,7 @@ function App() {
     angleOfRepose,
     packingEfficiency,
     showChair,
+    useImperial,
   ]);
 
   return (
@@ -135,6 +186,14 @@ function App() {
             marginTop: "20px",
           }}
         >
+          <label>
+            <input
+              type="checkbox"
+              checked={useImperial}
+              onChange={(e) => setUseImperial(e.target.checked)}
+            />
+            Use Imperial Units
+          </label>
           <label title="Pure gold/silver. OSE coins per rules are 10 to a pound!">
             Presets 🛈:
             <select
@@ -145,9 +204,15 @@ function App() {
                 );
                 if (coin) {
                   setSelectedCoin(coin);
-                  setCoinRadius(coin.radius);
-                  setCoinThickness(coin.thickness);
-                  setDensity(coin.density);
+                  if (!useImperial) {
+                    setCoinRadius(coin.radius);
+                    setCoinThickness(coin.thickness);
+                    setDensity(coin.density);
+                  } else {
+                    setCoinRadius(coin.imperialRadius);
+                    setCoinThickness(coin.imperialThickness);
+                    setDensity(coin.imperialDensity);
+                  }
                 }
               }}
             >
@@ -159,7 +224,7 @@ function App() {
             </select>
           </label>
           <label>
-            Coin Radius (cm):
+            Coin Radius ({lenUnit}):
             <input
               type="number"
               value={coinRadius}
@@ -169,7 +234,7 @@ function App() {
             />
           </label>
           <label>
-            Coin Thickness (cm):
+            Coin Thickness ({lenUnit}):
             <input
               type="number"
               value={coinThickness}
@@ -179,7 +244,7 @@ function App() {
             />
           </label>
           <label>
-            Density (g/cm³):
+            Density ({weightUnit}/{volUnit}):
             <input
               type="number"
               value={density}
@@ -248,16 +313,35 @@ function App() {
             flexShrink: "0",
           }}
         >
-          <p>Pile Height: {pileHeight().toFixed(2)} cm</p>
-          <p>Pile Radius: {pileRadius().toFixed(2)} cm</p>
           <p>
-            Pile Volume: {pileVolume().toFixed(2)} cm³ (
-            {(pileVolume() / 1000).toFixed(2)} liters)
+            Pile Height: {pileHeight().toFixed(2)} {lenUnit}
           </p>
-          <p>Pile Weight: {(pileWeight()/1000).toFixed(2)} kg</p>
-          <p>Coins per cm³: {coinsPerCm3().toFixed(2)}</p>
-          <p>Coin Volume: {coinVolume().toFixed(2)} cm³</p>
-          <p>Coin Weight: {coinWeight().toFixed(2)} g</p>
+          <p>
+            Pile Radius: {pileRadius().toFixed(2)} {lenUnit}
+          </p>
+          <p>
+            Pile Volume: {pileVolume().toFixed(2)} {volUnit} (
+            {useImperial
+              ? (pileVolume() / 231).toFixed(2)
+              : (pileVolume() / 1000).toFixed(2)}{" "}
+            {useImperial ? "gallons" : "liters"})
+          </p>
+          <p>
+            Pile Weight:{" "}
+            {useImperial
+              ? (pileWeight() / 16).toFixed(2)
+              : (pileWeight() / 1000).toFixed(2)}{" "}
+            {useImperial ? "lbs" : "kg"}
+          </p>
+          <p>
+            Coins per {volUnit}: {coinsPerCm3().toFixed(2)}
+          </p>
+          <p>
+            Coin Volume: {coinVolume().toFixed(2)} {volUnit}
+          </p>
+          <p>
+            Coin Weight: {coinWeight().toFixed(2)} {weightUnit}
+          </p>
         </div>
       </div>
     </>
