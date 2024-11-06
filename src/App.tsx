@@ -11,9 +11,9 @@ interface Coin {
 
 const coinList: Coin[] = [
   { name: "Roman Aureus", radius: 0.95, thickness: 0.145, density: 19.3 },
-  { name: "Silver Denarius", radius: 0.95, thickness: 0.145, density: 10.5 },
+  { name: "Silver Denarius", radius: 0.95, thickness: 0.145, density: 10.49 },
   { name: "OSE Gold Coin", radius: 1.935, thickness: 0.2, density: 19.3 },
-  { name: "OSE Silver Coin", radius: 2.14, thickness: 0.3, density: 10.5 },
+  { name: "OSE Silver Coin", radius: 2.14, thickness: 0.3, density: 10.49 },
 ];
 
 function App() {
