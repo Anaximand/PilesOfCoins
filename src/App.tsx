@@ -154,15 +154,6 @@ function App() {
   };
 
   useEffect(() => {
-    if (useImperial) {
-      setLenUnit("in");
-      setWeightUnit("oz");
-      setVolUnit("in³");
-    } else {
-      setLenUnit("cm");
-      setWeightUnit("g");
-      setVolUnit("cm³");
-    }
     drawPile();
   }, [
     coinCount,
@@ -171,8 +162,25 @@ function App() {
     angleOfRepose,
     packingEfficiency,
     showChair,
-    useImperial,
   ]);
+
+  useEffect(() => {
+    if (useImperial) {
+      setLenUnit("in");
+      setWeightUnit("oz");
+      setVolUnit("in³");
+      setCoinRadius(selectedCoin.imperialRadius);
+      setCoinThickness(selectedCoin.imperialThickness);
+      setDensity(selectedCoin.imperialDensity);
+    } else {
+      setLenUnit("cm");
+      setWeightUnit("g");
+      setVolUnit("cm³");
+      setCoinRadius(selectedCoin.radius);
+      setCoinThickness(selectedCoin.thickness);
+      setDensity(selectedCoin.density);
+    }
+  }, [selectedCoin, useImperial]);
 
   return (
     <>
